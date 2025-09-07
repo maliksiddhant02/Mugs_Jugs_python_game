@@ -1,0 +1,78 @@
+Welcome to Mug Drop!
+Enter the number of pieces for each player: 0
+Invalid number. Enter a digit from 4 to 9.
+Enter the number of pieces for each player: 3
+Invalid number. Enter a digit from 4 to 9.
+Enter the number of pieces for each player: 10
+Invalid number. Enter a digit from 4 to 9.
+Enter the number of pieces for each player: -5
+Invalid number. Enter a digit from 4 to 9.
+Enter the number of pieces for each player: four
+Invalid number. Enter a digit from 4 to 9.
+Enter the number of pieces for each player: 9
+Enter the board size: 0
+Invalid number. Enter a digit from 4 to 9.
+Enter the board size: -5
+Invalid number. Enter a digit from 4 to 9.
+Enter the board size: -9
+Invalid number. Enter a digit from 4 to 9.
+Enter the board size: FOUR
+Invalid number. Enter a digit from 4 to 9.
+Enter the board size:                     4
+Invalid number. Enter a digit from 4 to 9.
+Enter the board size: 4
+  +-----+-----+-----+-----+
+1 |     |     |     |     |
+  +-----+-----+-----+-----+
+2 |     |     |     |     |
+  +-----+-----+-----+-----+
+3 |     |     |     |     |
+  +-----+-----+-----+-----+
+4 |     |     |     |     |
+  +-----+-----+-----+-----+
+     1     2     3     4
+
+Cups to move.
+Available to place: /1\, /2\, /3\, /4\, /5\, /6\, /7\, /8\, /9\
+Choose a column and a piece size to drop your piece (Enter `help` for help message): HALP
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message): HELP ME
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message): DELP
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message): HELP
+- Enter `help` to obtain help message
+- Enter `quit` to quit the game
+- To make a move, enter a column & piece size in the format: `drop {column} {size}`
+  +-----+-----+-----+-----+
+1 |     |     |     |     |
+  +-----+-----+-----+-----+
+2 |     |     |     |     |
+  +-----+-----+-----+-----+
+3 |     |     |     |     |
+  +-----+-----+-----+-----+
+4 |     |     |     |     |
+  +-----+-----+-----+-----+
+     1     2     3     4
+
+Cups to move.
+Available to place: /1\, /2\, /3\, /4\, /5\, /6\, /7\, /8\, /9\
+Choose a column and a piece size to drop your piece (Enter `help` for help message):
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message):
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message):
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message):
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message):
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message):
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message): Q
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message): QUITE
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message):             QUIT
+Invalid command. Enter `help` for command format.
+Choose a column and a piece size to drop your piece (Enter `help` for help message): quIT
