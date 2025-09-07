@@ -134,6 +134,8 @@ def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
             return "help"
         elif lowered =="quit":
             return "quit"
+        else:
+            print("Invalid command. Enter `help` for command format.")
         
 
 
