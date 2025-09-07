@@ -16,7 +16,7 @@ if __name__ == "__main__":
     main()
 
 def num_hours() -> float:
-    HoursSpend = 9.5
+    HoursSpend = 11.5
     return HoursSpend
 
 def get_size(piece: Piece) -> int:
