@@ -16,7 +16,7 @@ if __name__ == "__main__":
     main()
 
 def num_hours() -> float:
-    HoursSpend = 11.5
+    HoursSpend = 13.5
     return HoursSpend
 
 def get_size(piece: Piece) -> int:
@@ -91,13 +91,29 @@ def drop_piece(board: Board, column: int, piece: Piece) -> None:
                      chr[column]=None
 
 def display_board(board: list[list[str]]):
-    rows = 0
-    for _ in board:
-        rows += 1
-    cols = 0
-    for _ in board[0]:
-        cols += 1
-    print(" " + "+-----"*cols + "+")
+    rows = len(board)
+    cols = len(board[0])
+
+    print("   " + "+-----" * cols + "+")
+
+    for r in range(rows):
+        line = " " + str(r+1)
+        if r+1 < 10:
+            line += " "
+        for c in range(cols):
+            cell = board[r][c]
+            if cell is None:
+                cell = "   "
+            line += "| " + cell + " "
+        line += "|"
+        print(line)
+        print("   " + "+-----" * cols + "+")
+
+    bottom = "   "
+    for c in range(cols):
+        num = str(c+1)
+        bottom += "   " + num + "  "
+    print(bottom)
 
 def get_game_settings() -> tuple[int, int]:
     while True:
@@ -115,8 +131,14 @@ def get_game_settings() -> tuple[int, int]:
     ans=(int(num_piece),int(board_size))
     return ans
 
-def to_lowercase(s: str) -> str:
-    lower_map={"A":"a","B":"b","C":"c","D":"d","E":"e","F":"f","G":"g","H":"h","I":"i","J":"j","K":"k","L":"l","M":"m","N":"n","O":"o","P":"p","Q":"q","R":"r","S":"s","T":"t","U":"u","V":"v","W":"w","X":"x","Y":"y","Z":"z"}
+def _to_lowercase(s: str) -> str:
+    lower_map={"A":"a","B":"b","C":"c","D":"d",
+               "E":"e","F":"f","G":"g","H":"h",
+               "I":"i","J":"j","K":"k","L":"l",
+               "M":"m","N":"n","O":"o","P":"p",
+               "Q":"q","R":"r","S":"s","T":"t",
+               "U":"u","V":"v","W":"w","X":"x",
+               "Y":"y","Z":"z"}
     result=""
     for ch in s:
         if ch in lower_map:
@@ -127,15 +149,38 @@ def to_lowercase(s: str) -> str:
 
 
 def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
+    column_size_board=len(board[0])
     while True:
         user_input=input("Choose a column and a piece size to drop your piece (Enter `help` for help message): ")
-        lowered=to_lowercase(user_input)
+        lowered=_to_lowercase(user_input)
         if lowered == "help":
-            return "help"
+            print(HELP_COMMAND)
         elif lowered =="quit":
-            return "quit"
+            return QUIT_COMMAND
+        elif len(lowered)==8:
+            key_word=lowered[0:4]
+            space=" "
+            column=int(lowered[5])-1
+            elem=lowered[7]
+            real_elem=get_piece(available_pieces,elem)
+            if key_word =="drop" and can_place(board,column,real_elem)==True and get_piece(available_pieces,elem)!=None:
+                drop_piece(board,column,real_elem)
+                ans=DROP_COMMAND+space+str(column+1)+space+elem
+                print(ans)
+            elif key_word =="drop" and can_place(board,column,real_elem)==True and get_piece(available_pieces,elem)==None:
+                print(INVALID_SIZE_MESSAGE)
+            elif key_word =="drop" and can_place(board,column,real_elem)==False and column_size_board<column+1:
+                print(INVALID_COLUMN_MESSAGE)
+            elif key_word =="drop" and can_place(board,column,real_elem)==False:
+                print(INVALID_INTEGERS_MESSAGE)
+            else:
+                print(INVALID_FORMAT_MESSAGE)
+        #elif lowered[0:4]=="drop" and len(lowered)>7:
+            #return INVALID_INTEGERS_MESSAGE
+
+        
         else:
-            print("Invalid command. Enter `help` for command format.")
+            print(INVALID_FORMAT_MESSAGE)
         
 
 
