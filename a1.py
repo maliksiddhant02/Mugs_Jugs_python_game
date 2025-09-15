@@ -8,13 +8,6 @@ from support import *
 
 # Define your classes and functions here
 
-
-def main() -> None: 
-    pass
-
-if __name__ == "__main__":
-    main()
-
 def num_hours() -> float:
     HoursSpend = 17.5
     return HoursSpend
@@ -147,36 +140,37 @@ def _to_lowercase(s: str) -> str:
 
 def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
     cols = len(board[0])
+    
     while True:
         user_input = input(COMMAND_PROMPT)
-
-        # reject leading/trailing spaces
-        if user_input != user_input.strip():
+        stripped_input = user_input.strip()
+        if stripped_input != user_input:
             print(INVALID_FORMAT_MESSAGE)
             continue
 
-        lowered = _to_lowercase(user_input)
-
+        lowered = stripped_input.lower()
         if lowered == HELP_COMMAND:
             return HELP_COMMAND
         if lowered == QUIT_COMMAND:
             return QUIT_COMMAND
 
-        parts = user_input.split(" ")
-        if len(parts) != 3 or _to_lowercase(parts[0]) != DROP_COMMAND:
+        parts = stripped_input.split(" ")
+        if len(parts) != 3 or parts[0].lower() != DROP_COMMAND:
             print(INVALID_FORMAT_MESSAGE)
             continue
 
         col_str, size_str = parts[1], parts[2]
-        if not (col_str.isdigit() and size_str.isdigit() and len(col_str) == 1 and len(size_str) == 1):
+        if not (col_str.isdigit() and size_str.isdigit()):
             print(INVALID_INTEGERS_MESSAGE)
             continue
 
-        col = int(col_str)
-        size = int(size_str)
-
+        col, size = int(col_str), int(size_str)
         if not (1 <= col <= cols):
             print(INVALID_COLUMN_MESSAGE)
+            continue
+
+        if not (1 <= size <= 9):
+            print(INVALID_SIZE_MESSAGE)
             continue
 
         piece = get_piece(available_pieces, size)
@@ -188,7 +182,7 @@ def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
             print(ILLEGAL_MOVE_MESSAGE)
             continue
 
-        return DROP_COMMAND + " " + str(col) + " " + str(size)
+        return f"{DROP_COMMAND} {col} {size}"
         
 def check_win(board: list[list[str | None]]) -> str | None:
     rows = len(board)
@@ -280,3 +274,14 @@ def play_game() -> None:
             current_player = MUGS
         else:
             current_player = CUPS
+
+
+def main() -> None: 
+    while True:
+        play_game()  # run one game
+        replay = input(REPLAY_PROMPT).strip().lower()
+        if replay != "y":
+            break
+
+if __name__ == "__main__":
+    main()
