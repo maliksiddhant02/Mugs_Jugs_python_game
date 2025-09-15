@@ -9,7 +9,7 @@ from support import *
 # Define your classes and functions here
 
 
-def main() -> None:
+def main() -> None: 
     pass
 
 if __name__ == "__main__":
@@ -148,20 +148,21 @@ def _to_lowercase(s: str) -> str:
 def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
     cols = len(board[0])
     while True:
-        user_input = input("Choose a column and a piece size to drop your piece (Enter `help` for help message): ")
-        # reject any leading/trailing whitespace (so "help " is invalid)
+        user_input = input(COMMAND_PROMPT)
+
+        # reject leading/trailing spaces
         if user_input != user_input.strip():
             print(INVALID_FORMAT_MESSAGE)
             continue
 
-        lowered = _to_lowercase(user_input)  # your lowercase helper
+        lowered = _to_lowercase(user_input)
 
         if lowered == HELP_COMMAND:
             return HELP_COMMAND
         if lowered == QUIT_COMMAND:
             return QUIT_COMMAND
 
-        parts = user_input.split(" ")   # split on single spaces so extra internal spaces become empty parts
+        parts = user_input.split(" ")
         if len(parts) != 3 or _to_lowercase(parts[0]) != DROP_COMMAND:
             print(INVALID_FORMAT_MESSAGE)
             continue
@@ -171,12 +172,14 @@ def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
             print(INVALID_INTEGERS_MESSAGE)
             continue
 
-        col, size = int(col_str), int(size_str)
+        col = int(col_str)
+        size = int(size_str)
+
         if not (1 <= col <= cols):
             print(INVALID_COLUMN_MESSAGE)
             continue
 
-        piece = get_piece(available_pieces, str(size))
+        piece = get_piece(available_pieces, size)
         if piece is None:
             print(INVALID_SIZE_MESSAGE)
             continue
@@ -184,12 +187,9 @@ def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
         if not can_place(board, col - 1, piece):
             print(ILLEGAL_MOVE_MESSAGE)
             continue
-        
-        drop_piece(board, col - 1, piece)
-        return f"{DROP_COMMAND} {col} {size}"
-        
-from support import CUPS, MUGS
 
+        return DROP_COMMAND + " " + str(col) + " " + str(size)
+        
 def check_win(board: list[list[str | None]]) -> str | None:
     rows = len(board)
     cols = len(board[0])
@@ -221,4 +221,62 @@ def check_win(board: list[list[str | None]]) -> str | None:
                     nc += dc
     return None
 
-        
+
+def play_game() -> None:
+    print(WELCOME_MESSAGE)
+
+    num_pieces, board_size = get_game_settings()
+    cups, mugs = generate_initial_pieces(num_pieces)
+    board = generate_initial_board(board_size)
+    current_player = CUPS
+
+
+    while True:
+        display_board(board)
+
+        winner = check_win(board)
+        if winner is not None:
+            print()
+            print("Game over, " + winner + " " + WIN_MESSAGE)  # Add prefix
+            break
+        elif not cups and not mugs:
+            print(GAME_OVER_MESSAGE + DRAW_MESSAGE)
+            break
+        print()
+
+        print(current_player + MOVE_MESSAGE)
+
+        if current_player == CUPS:
+            available = cups
+        else:
+            available = mugs
+
+        pieces_str = ""
+        for i in range(len(available)):
+            if i == 0:
+                pieces_str = available[i]
+            else:
+                pieces_str = pieces_str + ", " + available[i]
+
+        print(PIECES_MESSAGE + pieces_str)
+
+        command = get_player_command(board, available)
+
+        if command == HELP_COMMAND:
+            print(HELP_MESSAGE)
+            continue
+        if command == QUIT_COMMAND:
+            break
+
+        parts = command.split(" ")
+        col = int(parts[1]) - 1
+        size = int(parts[2])
+        piece = get_piece(available, size)
+
+        drop_piece(board, col, piece)
+        available.remove(piece)
+
+        if current_player == CUPS:
+            current_player = MUGS
+        else:
+            current_player = CUPS
