@@ -93,13 +93,9 @@ def drop_piece(board: Board, column: int, piece: Piece) -> None:
 def display_board(board: list[list[str]]):
     rows = len(board)
     cols = len(board[0])
-
-    print("   " + "+-----" * cols + "+")
-
+    print("  " + "+-----" * cols + "+")
     for r in range(rows):
-        line = " " + str(r+1)
-        if r+1 < 10:
-            line += " "
+        line = str(r + 1) + " "
         for c in range(cols):
             cell = board[r][c]
             if cell is None:
@@ -107,12 +103,13 @@ def display_board(board: list[list[str]]):
             line += "| " + cell + " "
         line += "|"
         print(line)
-        print("   " + "+-----" * cols + "+")
-
-    bottom = "   "
+        print("  " + "+-----" * cols + "+")
+    bottom = "     "
     for c in range(cols):
-        num = str(c+1)
-        bottom += "   " + num + "  "
+        num = str(c + 1)
+        bottom += num
+        if c != cols - 1:
+            bottom += " " * (6 - len(num))
     print(bottom)
 
 def get_game_settings() -> tuple[int, int]:
@@ -149,38 +146,41 @@ def _to_lowercase(s: str) -> str:
 
 
 def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
-    column_size_board=len(board[0])
+    cols = len(board[0])
     while True:
-        user_input=input("Choose a column and a piece size to drop your piece (Enter `help` for help message): ")
-        lowered=_to_lowercase(user_input)
-        if lowered == "help":
-            print(HELP_COMMAND)
-        elif lowered =="quit":
-            return QUIT_COMMAND
-        elif len(lowered)==8:
-            key_word=lowered[0:4]
-            space=" "
-            column=int(lowered[5])-1
-            elem=lowered[7]
-            real_elem=get_piece(available_pieces,elem)
-            if key_word =="drop" and can_place(board,column,real_elem)==True and get_piece(available_pieces,elem)!=None:
-                drop_piece(board,column,real_elem)
-                ans=DROP_COMMAND+space+str(column+1)+space+elem
-                print(ans)
-            elif key_word =="drop" and can_place(board,column,real_elem)==True and get_piece(available_pieces,elem)==None:
-                print(INVALID_SIZE_MESSAGE)
-            elif key_word =="drop" and can_place(board,column,real_elem)==False and column_size_board<column+1:
-                print(INVALID_COLUMN_MESSAGE)
-            elif key_word =="drop" and can_place(board,column,real_elem)==False:
-                print(INVALID_INTEGERS_MESSAGE)
-            else:
-                print(INVALID_FORMAT_MESSAGE)
-        #elif lowered[0:4]=="drop" and len(lowered)>7:
-            #return INVALID_INTEGERS_MESSAGE
-
+        user_input = input("Choose a column and a piece size to drop your piece (Enter `help` for help message): ")
+        lowered = _to_lowercase(user_input.strip())
         
-        else:
+        if lowered == HELP_COMMAND:
+            return HELP_COMMAND
+        if lowered == QUIT_COMMAND:
+            return QUIT_COMMAND
+
+        parts = lowered.split()
+        if len(parts) != 3 or parts[0] != DROP_COMMAND:
             print(INVALID_FORMAT_MESSAGE)
+            continue
+
+        col, size = parts[1], parts[2]
+        if not (col.isdigit() and size.isdigit() and len(col) == 1 and len(size) == 1):
+            print(INVALID_INTEGERS_MESSAGE)
+            continue
+
+        col, size = int(col), int(size)
+        piece = get_piece(available_pieces, str(size))
+
+        if not (1 <= col <= cols):
+            print(INVALID_COLUMN_MESSAGE)
+            continue
+        if piece is None:
+            print(INVALID_SIZE_MESSAGE)
+            continue
+        if not can_place(board, col - 1, piece):
+            print(ILLEGAL_MOVE_MESSAGE)
+            continue
+        
+        drop_piece(board, col - 1, piece)
+        return f"{DROP_COMMAND} {col} {size}"
         
 
 
