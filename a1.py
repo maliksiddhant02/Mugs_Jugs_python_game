@@ -16,7 +16,7 @@ if __name__ == "__main__":
     main()
 
 def num_hours() -> float:
-    HoursSpend = 13.5
+    HoursSpend = 17.5
     return HoursSpend
 
 def get_size(piece: Piece) -> int:
@@ -149,32 +149,38 @@ def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
     cols = len(board[0])
     while True:
         user_input = input("Choose a column and a piece size to drop your piece (Enter `help` for help message): ")
-        lowered = _to_lowercase(user_input.strip())
-        
+        # reject any leading/trailing whitespace (so "help " is invalid)
+        if user_input != user_input.strip():
+            print(INVALID_FORMAT_MESSAGE)
+            continue
+
+        lowered = _to_lowercase(user_input)  # your lowercase helper
+
         if lowered == HELP_COMMAND:
             return HELP_COMMAND
         if lowered == QUIT_COMMAND:
             return QUIT_COMMAND
 
-        parts = lowered.split()
-        if len(parts) != 3 or parts[0] != DROP_COMMAND:
+        parts = user_input.split(" ")   # split on single spaces so extra internal spaces become empty parts
+        if len(parts) != 3 or _to_lowercase(parts[0]) != DROP_COMMAND:
             print(INVALID_FORMAT_MESSAGE)
             continue
 
-        col, size = parts[1], parts[2]
-        if not (col.isdigit() and size.isdigit() and len(col) == 1 and len(size) == 1):
+        col_str, size_str = parts[1], parts[2]
+        if not (col_str.isdigit() and size_str.isdigit() and len(col_str) == 1 and len(size_str) == 1):
             print(INVALID_INTEGERS_MESSAGE)
             continue
 
-        col, size = int(col), int(size)
-        piece = get_piece(available_pieces, str(size))
-
+        col, size = int(col_str), int(size_str)
         if not (1 <= col <= cols):
             print(INVALID_COLUMN_MESSAGE)
             continue
+
+        piece = get_piece(available_pieces, str(size))
         if piece is None:
             print(INVALID_SIZE_MESSAGE)
             continue
+
         if not can_place(board, col - 1, piece):
             print(ILLEGAL_MOVE_MESSAGE)
             continue
@@ -182,7 +188,37 @@ def get_player_command(board: Board, available_pieces: list[Piece]) -> str:
         drop_piece(board, col - 1, piece)
         return f"{DROP_COMMAND} {col} {size}"
         
+from support import CUPS, MUGS
 
+def check_win(board: list[list[str | None]]) -> str | None:
+    rows = len(board)
+    cols = len(board[0])
 
+    def _get_owner(piece: str | None) -> str | None:
+        if piece is None:
+            return None
+        if piece.startswith("("):
+            return MUGS
+        if piece.startswith("/"):
+            return CUPS
+        return None
+
+    directions = [(0,1), (1,0), (1,1), (1,-1)]
+
+    for r in range(rows):
+        for c in range(cols):
+            owner = _get_owner(board[r][c])
+            if owner is None:
+                continue
+            for dr, dc in directions:
+                count = 1
+                nr, nc = r + dr, c + dc
+                while 0 <= nr < rows and 0 <= nc < cols and _get_owner(board[nr][nc]) == owner:
+                    count += 1
+                    if count >= 3:
+                        return owner
+                    nr += dr
+                    nc += dc
+    return None
 
         
