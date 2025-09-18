@@ -287,11 +287,11 @@ def check_win(board: list[list[str | None]]) -> str | None:
     cols = len(board[0])
 
     def _get_owner(piece: str | None) -> str | None:
-        if piece is None:
+        if piece is None or piece == "":
             return None
-        if piece.startswith("("):
+        if piece[0] == "(":
             return MUGS
-        if piece.startswith("/"):
+        if piece[0] == "/":
             return CUPS
         return None
 
